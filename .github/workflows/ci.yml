@@ -1,0 +1,36 @@
+name: PantauUdara
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    # ENV untuk seluruh job (termasuk PHP & PHPUnit)
+    env:
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
+    steps:
+      # 1. Checkout kode dari repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup PHP (versi sesuaikan dengan project kamu)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          extensions: curl
+
+      # 3. Install dependency via Composer
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      # 4. Jalankan PHPUnit
+      - name: Run PHPUnit tests
+        run: vendor/bin/phpunit
