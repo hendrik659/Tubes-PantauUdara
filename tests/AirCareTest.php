@@ -18,6 +18,7 @@ class AirCareTest extends TestCase
      */
     private array $projectFiles = [
         'index.php',
+        'edukasi.php',
     ];
 
     /**

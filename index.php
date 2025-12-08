@@ -1,29 +1,18 @@
 <?php
-// ----------------------------------------------------
-// Konfigurasi umum
-// ----------------------------------------------------
 const OW_GEOCODING_URL   = 'https://api.openweathermap.org/geo/1.0/direct';
 const OW_AIR_POLLUTION   = 'https://api.openweathermap.org/data/2.5/air_pollution';
-const OW_DEFAULT_LIMIT   = 1; // ambil 1 kota teratas
+const OW_DEFAULT_LIMIT   = 1; 
 
-// Kota default: Kediri, Indonesia
 const DEFAULT_CITY_QUERY = 'Kediri,ID';
 
-/**
- * Ambil API key dari:
- * 1) Environment variable OPENWEATHER_API_KEY (GitHub Secrets / export env)
- * 2) configlocal.php (fallback untuk lokal)
- */
 function getOpenWeatherApiKey(): string
 {
-    // 1. Coba dari environment
     $key = getenv('OPENWEATHER_API_KEY');
 
-    // 2. Kalau kosong → coba configlocal.php
     if ($key === false || trim((string)$key) === '') {
         $configPath = __DIR__ . '/configlocal.php';
         if (file_exists($configPath)) {
-            $config = require $configPath; // harus mengembalikan array
+            $config = require $configPath; 
             if (is_array($config) && isset($config['OPENWEATHER_API_KEY'])) {
                 $key = $config['OPENWEATHER_API_KEY'];
             }
@@ -42,9 +31,6 @@ function getOpenWeatherApiKey(): string
     return $key;
 }
 
-/**
- * Panggil endpoint umum (GET) dan kembalikan array hasil decode JSON.
- */
 function callApi(string $url, array $query): array
 {
     $fullUrl = $url . '?' . http_build_query($query);
@@ -81,9 +67,6 @@ function callApi(string $url, array $query): array
     return $data;
 }
 
-/**
- * Geocoding: nama kota -> lat, lon, name, country
- */
 function geocodeCity(string $city): array
 {
     $apiKey = getOpenWeatherApiKey();
@@ -108,9 +91,6 @@ function geocodeCity(string $city): array
     ];
 }
 
-/**
- * Ambil kualitas udara saat ini berdasarkan lat & lon.
- */
 function fetchCurrentAirQuality(float $lat, float $lon): array
 {
     $apiKey = getOpenWeatherApiKey();
@@ -127,9 +107,6 @@ function fetchCurrentAirQuality(float $lat, float $lon): array
     return $data['list'][0];
 }
 
-/**
- * Konversi nilai AQI (1-5) dari OpenWeather ke label singkat.
- */
 function aqiLabel(int $aqi): string
 {
     return match ($aqi) {
@@ -142,9 +119,6 @@ function aqiLabel(int $aqi): string
     };
 }
 
-/**
- * Rekomendasi kesehatan berdasarkan AQI.
- */
 function aqiRecommendation(int $aqi): string
 {
     return match ($aqi) {
@@ -157,9 +131,6 @@ function aqiRecommendation(int $aqi): string
     };
 }
 
-/**
- * Kelas warna gauge berdasarkan AQI.
- */
 function aqiColorClass(int $aqi): string
 {
     return match ($aqi) {
@@ -172,18 +143,12 @@ function aqiColorClass(int $aqi): string
     };
 }
 
-/**
- * Format angka dengan 1–2 decimal.
- */
 function fmt(?float $value): string
 {
     if ($value === null) return '-';
     return number_format($value, 1, ',', '.');
 }
 
-/**
- * Metadata tiap polutan untuk tampilan kartu.
- */
 function pollutantMeta(string $key): array
 {
     return match ($key) {
@@ -237,10 +202,6 @@ function pollutantMeta(string $key): array
     };
 }
 
-/**
- * Kategori kualitas untuk polutan (Sangat Baik / Perlu Diwaspadai / Buruk).
- * Ini hanya pendekatan sederhana, bukan standar resmi.
- */
 function pollutantCategory(float $value, string $key): array
 {
     $label = 'Sangat Baik';
@@ -267,9 +228,6 @@ function pollutantCategory(float $value, string $key): array
     return ['label' => $label, 'class' => $class];
 }
 
-// ----------------------------------------------------
-// Logic utama halaman (langsung kota Kediri)
-// ----------------------------------------------------
 $error      = null;
 $location   = null;
 $aqData     = null;
@@ -301,9 +259,8 @@ try {
     <title>AirCare - Pantau Kualitas Udara Kediri</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS custom -->
+
     <link href="css/index.css" rel="stylesheet">
 </head>
 <body>
@@ -322,7 +279,7 @@ try {
                 <li class="nav-item"><a class="nav-link active" href="index.php">Beranda</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Cari Kota</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Edukasi</a></li>
+                <li class="nav-item"><a class="nav-link" href="edukasi.php">Edukasi</a></li>
             </ul>
         </div>
     </div>
@@ -347,7 +304,7 @@ try {
                 <a href="#" class="btn btn-primary-air">
                     Cek Kota Lain
                 </a>
-                <a href="#" class="btn btn-outline-air">
+                <a href="edukasi.php" class="btn btn-outline-air">
                     Pelajari Polutan
                 </a>
             </div>
