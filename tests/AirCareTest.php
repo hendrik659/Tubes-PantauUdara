@@ -19,6 +19,7 @@ class AirCareTest extends TestCase
     private array $projectFiles = [
         'index.php',
         'edukasi.php',
+        'pencarian.php',
     ];
 
     /**
@@ -118,7 +119,7 @@ class AirCareTest extends TestCase
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_TIMEOUT        => 20,
-            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYPEER => false, // Disable SSL verification for local development
         ]);
 
         $body = curl_exec($ch);

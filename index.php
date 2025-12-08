@@ -40,7 +40,7 @@ function callApi(string $url, array $query): array
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_TIMEOUT        => 15,
-        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYPEER => false, // Disable for local development
     ]);
 
     $response = curl_exec($ch);
@@ -278,7 +278,7 @@ try {
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-3">
                 <li class="nav-item"><a class="nav-link active" href="index.php">Beranda</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Cari Kota</a></li>
+                <li class="nav-item"><a class="nav-link" href="pencarian.php">Cari Kota</a></li>
                 <li class="nav-item"><a class="nav-link" href="edukasi.php">Edukasi</a></li>
             </ul>
         </div>
@@ -301,7 +301,7 @@ try {
             </p>
 
             <div class="hero-actions">
-                <a href="#" class="btn btn-primary-air">
+                <a href="pencarian.php" class="btn btn-primary-air">
                     Cek Kota Lain
                 </a>
                 <a href="edukasi.php" class="btn btn-outline-air">
