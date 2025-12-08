@@ -279,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['city'])) {
                 </a>
                 <div class="flex items-center space-x-6">
                     <a href="index.php" class="text-gray-600 hover:text-gray-900 transition font-medium">Beranda</a>
-                    <a href="#" class="text-gray-600 hover:text-gray-900 transition font-medium">Tentang</a>
+                    <a href="about.php" class="text-gray-600 hover:text-gray-900 transition font-medium">Tentang</a>
                     <a href="pencarian.php" class="text-green-600 hover:text-green-700 transition font-semibold border-b-2 border-green-600 pb-1">Cari Kota</a>
                     <a href="edukasi.php" class="text-gray-600 hover:text-gray-900 transition font-medium">Edukasi</a>
                 </div>

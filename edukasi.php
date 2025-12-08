@@ -121,7 +121,7 @@
             <div class="collapse navbar-collapse" id="navMain">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-3">
                     <li class="nav-item"><a class="nav-link" href="index.php">Beranda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.php">Tentang</a></li>
                     <li class="nav-item"><a class="nav-link" href="pencarian.php">Cari Kota</a></li>
                     <li class="nav-item"><a class="nav-link active" aria-current="page" href="edukasi.php">Edukasi</a></li>
                 </ul>
