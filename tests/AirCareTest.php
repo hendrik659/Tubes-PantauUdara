@@ -20,6 +20,8 @@ class AirCareTest extends TestCase
         'index.php',
         'edukasi.php',
         'pencarian.php',
+        'about.php',
+    
     ];
 
     /**
