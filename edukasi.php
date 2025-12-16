@@ -5,8 +5,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Edukasi Detail Konsentrasi Polutan</title>
+    <title>Edukasi - AirCare</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="css/index.css" rel="stylesheet">
     <style>
         :root {
@@ -90,29 +91,17 @@
         .unit { color: var(--muted); margin-left: 6px; font-size: 14px; }
         .desc { color: var(--muted); font-size: 14px; }
         .note-footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
-        /* Footer full-width */
         .site-footer {
             width: 100%;
-            background: #070b1c;
-            color: #cfd6e4;
-            margin-top: 40px;
+            margin-top: 0;
         }
-        .site-footer .footer-inner {
-            padding: 18px 24px 22px;
-        }
-        .site-footer hr {
-            border-color: rgba(255,255,255,0.14);
-            opacity: 1;
-        }
-        .site-footer a { color: #9ed7ff; }
-        .site-footer a:hover { color: #c2e7ff; }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg top-nav fixed-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.php">
-                <span class="logo-dot"></span>
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
+                <i class="fa-solid fa-wind"></i>
                 <strong>AirCare</strong>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
@@ -234,16 +223,16 @@
         </footer>
     </div>
     <footer class="site-footer">
-        <div class="footer-inner">
-            <hr class="mb-3">
+        <div class="container-fluid py-3">
+            <hr class="border-secondary opacity-50 mb-3">
             <p class="mb-0 text-center small">
-            © <?php echo date('Y'); ?> AirCare. Data powered by
-            <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer">
-                OpenWeatherMap API
-            </a>.
-        </p>
-    </div>
-</footer>
+                © <?php echo date('Y'); ?> AirCare. Data powered by
+                <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer">
+                    OpenWeatherMap API
+                </a>.
+            </p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

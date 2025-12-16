@@ -143,3 +143,4 @@ function pollutantCategory(float $value, string $key): array
     return ['label' => $label, 'class' => $class];
 }
 
+

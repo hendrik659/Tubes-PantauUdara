@@ -256,19 +256,18 @@ try {
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>AirCare - Pantau Kualitas Udara Kediri</title>
+    <title>AirCare - Pantau Kualitas Udara</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="css/index.css" rel="stylesheet">
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg top-nav fixed-top">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <span class="logo-dot"></span>
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
+            <i class="fa-solid fa-wind"></i>
             <strong>AirCare</strong>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
@@ -346,7 +345,7 @@ try {
                                 <div class="gauge-caption">Indeks AQI (1 – 5)</div>
                             </div>
                         </div>
-                        <p class="text-muted small mt-2 mb-0 text-center">
+                        <p class="reco-message <?php echo htmlspecialchars($colorClass, ENT_QUOTES, 'UTF-8'); ?> mt-2 mb-0">
                             <?php echo htmlspecialchars($reco, ENT_QUOTES, 'UTF-8'); ?>
                         </p>
                     </div>
@@ -394,44 +393,33 @@ try {
                         Satuan: mikrogram per meter kubik (µg/m³)
                     </p>
 
-                    <?php foreach ($pollutantOrder as $key): ?>
-                        <?php if (!isset($c[$key])) continue; ?>
-                        <?php
-                            $value      = (float)$c[$key];
-                            $meta       = pollutantMeta($key);
-                            $category   = pollutantCategory($value, $key);
-                            $statusClass= $category['class'];
-                            $statusLabel= $category['label'];
-                            $barWidth   = max(8, min(100, $value * 2));
-                        ?>
-                        <div class="pol-card <?php echo $statusClass; ?>">
-                            <div class="pol-col-left">
-                                <div class="pol-code">
-                                    <?php echo $meta['code']; ?>
-                                </div>
-                                <div class="pol-name-label">
-                                    <?php echo $meta['name']; ?>
-                                </div>
-                            </div>
-                            <div class="pol-col-middle">
-                                <div class="pol-value-big">
-                                    <?php echo fmt($value); ?>
-                                </div>
-                                <div class="pol-unit">µg/m³</div>
-                                <div class="pol-bar">
-                                    <span style="width: <?php echo $barWidth; ?>%;"></span>
+                    <div class="pollutant-grid">
+                        <?php foreach ($pollutantOrder as $key): ?>
+                            <?php if (!isset($c[$key])) continue; ?>
+                            <?php
+                                $value      = (float)$c[$key];
+                                $meta       = pollutantMeta($key);
+                                $category   = pollutantCategory($value, $key);
+                                $statusClass= $category['class'];
+                                $statusLabel= $category['label'];
+                            ?>
+                            <div class="pol-card-simple <?php echo $statusClass; ?>">
+                                <div class="pol-top-section">
+                                    <div class="pol-header-row">
+                                        <div class="pol-code"><?php echo $meta['code']; ?></div>
+                                        <span class="pol-badge <?php echo $statusClass; ?>">
+                                            <?php echo htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8'); ?>
+                                        </span>
+                                    </div>
+                                    <div class="pol-name"><?php echo $meta['name']; ?></div>
+                                    <div class="pol-value-wrapper">
+                                        <span class="pol-value-number"><?php echo fmt($value); ?></span>
+                                        <span class="pol-unit">µg/m³</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="pol-col-right">
-                                <p class="mb-2">
-                                    <?php echo $meta['desc']; ?>
-                                </p>
-                                <span class="pol-badge">
-                                    ✔ <?php echo htmlspecialchars($statusLabel, ENT_QUOTES, 'UTF-8'); ?>
-                                </span>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
 
                 </div>
             </div>

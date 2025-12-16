@@ -109,12 +109,12 @@ function aqiLabel(int $aqi): string
 function aqiColorClass(int $aqi): string
 {
     return match ($aqi) {
-        1 => 'bg-gradient-to-br from-green-400 to-green-600',
-        2 => 'bg-gradient-to-br from-yellow-400 to-yellow-600',
-        3 => 'bg-gradient-to-br from-orange-400 to-orange-600',
-        4 => 'bg-gradient-to-br from-red-400 to-red-600',
-        5 => 'bg-gradient-to-br from-purple-500 to-purple-700',
-        default => 'bg-gradient-to-br from-gray-400 to-gray-600',
+        1 => 'bg-success',
+        2 => 'bg-warning',
+        3 => 'bg-warning',
+        4 => 'bg-danger',
+        5 => 'bg-danger',
+        default => 'bg-secondary',
     };
 }
 
@@ -168,234 +168,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['city'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pencarian Kota - AirCare</title>
     <meta name="description" content="Cari dan pantau kualitas udara di berbagai kota di seluruh dunia">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --aircare-green: #16a34a;
-            --aircare-green-light: #22c55e;
-            --aircare-green-soft: #bbf7d0;
-            --aircare-bg: #f3f4f6;
-        }
-        
-        * {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
-        
-        body {
-            background: radial-gradient(circle at top, #e5f9ee 0%, #f9fafb 40%, #e5e7eb 100%);
-            min-height: 100vh;
-        }
-        
-        .search-card {
-            background: white;
-            border-radius: 2rem;
-            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: var(--aircare-green);
-            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
-        }
-        
-        .city-card {
-            background: white;
-            border-radius: 1.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid #f3f4f6;
-        }
-        
-        .city-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(22, 163, 74, 0.15);
-            border-color: var(--aircare-green-soft);
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .btn-search {
-            background: linear-gradient(135deg, #16a34a, #22c55e);
-            box-shadow: 0 14px 30px rgba(22, 163, 74, 0.35);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-search:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 40px rgba(22, 163, 74, 0.45);
-        }
-        
-        .aqi-badge {
-            border-radius: 2rem;
-            padding: 1rem 2rem;
-            display: inline-block;
-        }
-        
-        .navbar-glass {
-            backdrop-filter: blur(18px);
-            background: rgba(255, 255, 255, 0.92);
-            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
-        }
-        
-        .logo-dot {
-            display: inline-flex;
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            background: radial-gradient(circle at 30% 20%, #bbf7d0 0%, #22c55e 60%, #16a34a 100%);
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="css/index.css" rel="stylesheet">
+
+
 </head>
-<body class="antialiased">
+<body class="antialiased" style="padding-top: 72px;">
     
     <!-- Navbar -->
-    <nav class="navbar-glass sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <a href="index.php" class="flex items-center space-x-2 hover:opacity-80 transition">
-                    <span class="logo-dot"></span>
-                    <span class="text-xl font-bold text-gray-800">AirCare</span>
-                </a>
-                <div class="flex items-center space-x-6">
-                    <a href="index.php" class="text-gray-600 hover:text-gray-900 transition font-medium">Beranda</a>
-                    <a href="about.php" class="text-gray-600 hover:text-gray-900 transition font-medium">Tentang</a>
-                    <a href="pencarian.php" class="text-green-600 hover:text-green-700 transition font-semibold border-b-2 border-green-600 pb-1">Cari Kota</a>
-                    <a href="edukasi.php" class="text-gray-600 hover:text-gray-900 transition font-medium">Edukasi</a>
-                </div>
+    <nav class="navbar navbar-expand-lg top-nav fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.php">
+                <i class="fa-solid fa-wind"></i>
+                <strong>AirCare</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMain">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-lg-3">
+                    <li class="nav-item"><a class="nav-link" href="index.php">Beranda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.php">Tentang</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="pencarian.php">Cari Kota</a></li>
+                    <li class="nav-item"><a class="nav-link" href="edukasi.php">Edukasi</a></li>
+                </ul>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-12">
+    <main class="container py-5">
         
         <!-- Header Section -->
-        <div class="text-center mb-12 fade-in">
-            <div class="text-sm uppercase tracking-widest font-semibold text-gray-500 mb-3">PENCARIAN KOTA</div>
-            <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-                Cari Kualitas <span class="text-green-600">Udara</span> 🔍
+        <div class="text-center mb-5">
+            <div class="text-muted text-uppercase fw-semibold mb-3">PENCARIAN KOTA</div>
+            <h1 class="display-4 fw-bold text-dark mb-4">
+                Cari Kualitas <span class="text-success">Udara</span> 🔍
             </h1>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p class="lead text-muted max-w-2xl mx-auto">
                 Temukan informasi kualitas udara real-time untuk kota di seluruh dunia
             </p>
         </div>
 
         <!-- Search Form -->
-        <div class="max-w-3xl mx-auto mb-12 fade-in">
-            <form method="POST" action="" class="relative">
-                <div class="search-card p-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="flex-1">
-                            <input 
-                                type="text" 
-                                name="search_query" 
-                                id="search_query"
-                                value="<?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?>"
-                                placeholder="Masukkan nama kota (contoh: Jakarta, London, Tokyo)..." 
-                                class="search-input w-full px-6 py-4 bg-gray-50 text-gray-900 placeholder-gray-400 rounded-xl border-2 border-gray-200 text-lg transition"
-                                required
-                                autocomplete="off"
-                            >
-                        </div>
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8">
+                <form method="POST" action="" class="card p-4 shadow">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            name="search_query" 
+                            id="search_query"
+                            value="<?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?>"
+                            placeholder="Masukkan nama kota (contoh: Jakarta, London, Tokyo)..." 
+                            class="form-control form-control-lg"
+                            required
+                            autocomplete="off"
+                        >
                         <button 
                             type="submit" 
-                            class="btn-search px-8 py-4 text-white font-bold rounded-xl"
+                            class="btn btn-success btn-lg"
                         >
                             🔍 Cari
                         </button>
                     </div>
-                </div>
-            </form>
-            
-            <?php if ($error): ?>
-                <div class="mt-6 bg-white rounded-xl p-6 border-l-4 border-red-500 shadow-lg">
-                    <div class="flex items-start space-x-3">
-                        <span class="text-2xl">⚠️</span>
-                        <div>
-                            <h3 class="text-gray-900 font-semibold text-lg mb-1">Terjadi Kesalahan</h3>
-                            <p class="text-gray-600"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></p>
-                        </div>
+                </form>
+                
+                <?php if ($error): ?>
+                    <div class="alert alert-danger mt-4">
+                        <strong>Terjadi Kesalahan:</strong> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
                     </div>
-                </div>
-            <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Search Results -->
         <?php if (!empty($searchResults) && !$selectedCity): ?>
-            <div class="max-w-5xl mx-auto fade-in">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">
-                    📍 Hasil Pencarian untuk "<?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?>"
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <?php foreach ($searchResults as $city): ?>
-                        <?php
-                            $cityName = $city['name'] ?? 'Unknown';
-                            $country = $city['country'] ?? '';
-                            $state = $city['state'] ?? '';
-                            $lat = $city['lat'] ?? 0;
-                            $lon = $city['lon'] ?? 0;
-                            
-                            // Encode data kota untuk dikirim via URL
-                            $cityData = base64_encode(json_encode([
-                                'name' => $cityName,
-                                'country' => $country,
-                                'state' => $state,
-                                'lat' => $lat,
-                                'lon' => $lon
-                            ]));
-                        ?>
-                        <a href="?city=<?php echo urlencode($cityData); ?>" class="city-card p-6 shadow-lg">
-                            <div class="flex items-start justify-between mb-4">
-                                <div>
-                                    <h3 class="text-2xl font-bold text-gray-900 mb-1">
-                                        <?php echo htmlspecialchars($cityName, ENT_QUOTES, 'UTF-8'); ?>
-                                    </h3>
-                                    <p class="text-gray-600">
-                                        <?php 
-                                            $location = [];
-                                            if ($state) $location[] = $state;
-                                            if ($country) $location[] = $country;
-                                            echo htmlspecialchars(implode(', ', $location), ENT_QUOTES, 'UTF-8');
-                                        ?>
-                                    </p>
-                                </div>
-                                <span class="text-3xl">🌍</span>
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="h3 fw-bold text-dark mb-4">
+                        📍 Hasil Pencarian untuk "<?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?>"
+                    </h2>
+                    <div class="row g-4">
+                        <?php foreach ($searchResults as $city): ?>
+                            <?php
+                                $cityName = $city['name'] ?? 'Unknown';
+                                $country = $city['country'] ?? '';
+                                $state = $city['state'] ?? '';
+                                $lat = $city['lat'] ?? 0;
+                                $lon = $city['lon'] ?? 0;
+                                
+                                // Encode data kota untuk dikirim via URL
+                                $cityData = base64_encode(json_encode([
+                                    'name' => $cityName,
+                                    'country' => $country,
+                                    'state' => $state,
+                                    'lat' => $lat,
+                                    'lon' => $lon
+                                ]));
+                            ?>
+                            <div class="col-md-6 col-lg-4">
+                                <a href="?city=<?php echo urlencode($cityData); ?>" class="card h-100 shadow-sm border-0 text-decoration-none">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start justify-content-between mb-3">
+                                            <div>
+                                                <h3 class="h5 fw-bold text-dark mb-1">
+                                                    <?php echo htmlspecialchars($cityName, ENT_QUOTES, 'UTF-8'); ?>
+                                                </h3>
+                                                <p class="text-muted small">
+                                                    <?php 
+                                                        $location = [];
+                                                        if ($state) $location[] = $state;
+                                                        if ($country) $location[] = $country;
+                                                        echo htmlspecialchars(implode(', ', $location), ENT_QUOTES, 'UTF-8');
+                                                    ?>
+                                                </p>
+                                            </div>
+                                            <span class="fs-1">🌍</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between text-muted small mb-3">
+                                            <span>📍 Lat: <?php echo number_format($lat, 4); ?></span>
+                                            <span>Lon: <?php echo number_format($lon, 4); ?></span>
+                                        </div>
+                                        <div class="border-top pt-3">
+                                            <span class="text-success fw-semibold d-inline-flex align-items-center">
+                                                Lihat Kualitas Udara 
+                                                <svg class="ms-2" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
                             </div>
-                            <div class="flex items-center justify-between text-sm text-gray-500">
-                                <span>📍 Lat: <?php echo number_format($lat, 4); ?></span>
-                                <span>Lon: <?php echo number_format($lon, 4); ?></span>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-gray-200">
-                                <span class="text-green-600 font-semibold inline-flex items-center">
-                                    Lihat Kualitas Udara 
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </a>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
@@ -408,52 +316,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['city'])) {
                 $reco = aqiRecommendation($aqi);
                 $components = $aqData['components'] ?? [];
             ?>
-            <div class="max-w-6xl mx-auto fade-in">
+            <div class="row justify-content-center">
                 
-                <a href="pencarian.php" class="inline-flex items-center text-gray-700 hover:text-green-600 transition mb-6 text-lg font-medium">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Kembali ke Pencarian
-                </a>
+                <div class="col-12 mb-4">
+                    <a href="pencarian.php" class="btn btn-outline-secondary d-inline-flex align-items-center">
+                        <svg class="me-2" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                        Kembali ke Pencarian
+                    </a>
+                </div>
 
-                <div class="search-card p-8 mb-8">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-4xl font-bold text-gray-900 mb-2">
-                                <?php echo htmlspecialchars($selectedCity['name'], ENT_QUOTES, 'UTF-8'); ?>
-                            </h2>
-                            <p class="text-xl text-gray-600">
-                                <?php 
-                                    $location = [];
-                                    if ($selectedCity['state']) $location[] = $selectedCity['state'];
-                                    if ($selectedCity['country']) $location[] = $selectedCity['country'];
-                                    echo htmlspecialchars(implode(', ', $location), ENT_QUOTES, 'UTF-8');
-                                ?>
-                            </p>
-                            <p class="text-gray-500 mt-2">
-                                📍 Koordinat: <?php echo number_format($selectedCity['lat'], 4); ?>, <?php echo number_format($selectedCity['lon'], 4); ?>
-                            </p>
+                <div class="col-lg-10 mb-5">
+                    <div class="card p-4 shadow">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="h2 fw-bold text-dark mb-2">
+                                    <?php echo htmlspecialchars($selectedCity['name'], ENT_QUOTES, 'UTF-8'); ?>
+                                </h2>
+                                <p class="h5 text-muted mb-2">
+                                    <?php 
+                                        $location = [];
+                                        if ($selectedCity['state']) $location[] = $selectedCity['state'];
+                                        if ($selectedCity['country']) $location[] = $selectedCity['country'];
+                                        echo htmlspecialchars(implode(', ', $location), ENT_QUOTES, 'UTF-8');
+                                    ?>
+                                </p>
+                                <p class="text-muted">
+                                    📍 Koordinat: <?php echo number_format($selectedCity['lat'], 4); ?>, <?php echo number_format($selectedCity['lon'], 4); ?>
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="fs-1">🌤️</span>
+                            </div>
                         </div>
-                        <div class="text-6xl">�️</div>
                     </div>
                 </div>
 
-                <div class="search-card p-8 mb-8">
-                    <div class="text-center">
-                        <h3 class="text-2xl font-semibold text-gray-900 mb-6">Indeks Kualitas Udara (AQI)</h3>
-                        <div class="inline-block <?php echo $colorClass; ?> rounded-3xl p-12 shadow-2xl transform hover:scale-105 transition">
-                            <div class="text-8xl font-bold text-white mb-4"><?php echo $aqi; ?></div>
-                            <div class="text-3xl font-semibold text-white mb-2"><?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?></div>
-                            <div class="text-white/90 text-sm">Skala 1 - 5</div>
+                <div class="col-lg-10 mb-5">
+                    <div class="card p-5 shadow text-center">
+                        <h3 class="h4 fw-semibold text-dark mb-4">Indeks Kualitas Udara (AQI)</h3>
+                        <div class="d-inline-block p-5 rounded-4 shadow <?php echo $colorClass; ?> text-white">
+                            <div class="display-1 fw-bold mb-3"><?php echo $aqi; ?></div>
+                            <div class="h4 fw-semibold mb-2"><?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?></div>
+                            <div class="small opacity-75">Skala 1 - 5</div>
                         </div>
-                        <div class="mt-8 max-w-2xl mx-auto">
-                            <div class="bg-gray-50 rounded-xl p-6 border-l-4 border-green-500">
-                                <div class="flex items-start space-x-3">
-                                    <span class="text-3xl">💡</span>
-                                    <div class="text-left">
-                                        <h4 class="text-gray-900 font-semibold text-lg mb-2">Rekomendasi</h4>
-                                        <p class="text-gray-700"><?php echo htmlspecialchars($reco, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <div class="mt-4">
+                            <div class="alert alert-light border-success">
+                                <div class="d-flex align-items-start">
+                                    <span class="fs-2 me-3">💡</span>
+                                    <div class="text-start">
+                                        <h5 class="alert-heading fw-semibold">Rekomendasi</h5>
+                                        <p class="mb-0"><?php echo htmlspecialchars($reco, ENT_QUOTES, 'UTF-8'); ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -461,82 +375,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['city'])) {
                     </div>
                 </div>
 
-                <div class="search-card p-8">
-                    <h3 class="text-2xl font-semibold text-gray-900 mb-6">📊 Detail Polutan (µg/m³)</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        <?php
-                            $pollutants = [
-                                'pm2_5' => ['name' => 'PM2.5', 'icon' => '💨'],
-                                'pm10' => ['name' => 'PM10', 'icon' => '🌫️'],
-                                'no2' => ['name' => 'NO₂', 'icon' => '🏭'],
-                                'o3' => ['name' => 'O₃', 'icon' => '☀️'],
-                                'so2' => ['name' => 'SO₂', 'icon' => '🏭'],
-                                'co' => ['name' => 'CO', 'icon' => '🚗'],
-                                'nh3' => ['name' => 'NH₃', 'icon' => '🌾'],
-                            ];
-                            
-                            foreach ($pollutants as $key => $meta):
-                                if (!isset($components[$key])) continue;
-                                $value = (float)$components[$key];
-                        ?>
-                            <div class="bg-gray-50 rounded-xl p-6 hover:bg-gray-100 transition border border-gray-200">
-                                <div class="text-4xl mb-3"><?php echo $meta['icon']; ?></div>
-                                <div class="text-gray-600 text-sm mb-1"><?php echo $meta['name']; ?></div>
-                                <div class="text-3xl font-bold text-green-600"><?php echo fmt($value); ?></div>
-                            </div>
-                        <?php endforeach; ?>
+                <div class="col-lg-10">
+                    <div class="card p-4 shadow">
+                        <h3 class="h4 fw-semibold text-dark mb-4">📊 Detail Polutan (µg/m³)</h3>
+                        <div class="row g-4">
+                            <?php
+                                $pollutants = [
+                                    'pm2_5' => ['name' => 'PM2.5', 'icon' => '💨'],
+                                    'pm10' => ['name' => 'PM10', 'icon' => '🌫️'],
+                                    'no2' => ['name' => 'NO₂', 'icon' => '🏭'],
+                                    'o3' => ['name' => 'O₃', 'icon' => '☀️'],
+                                    'so2' => ['name' => 'SO₂', 'icon' => '🏭'],
+                                    'co' => ['name' => 'CO', 'icon' => '🚗'],
+                                    'nh3' => ['name' => 'NH₃', 'icon' => '🌾'],
+                                ];
+                                
+                                foreach ($pollutants as $key => $meta):
+                                    if (!isset($components[$key])) continue;
+                                    $value = (float)$components[$key];
+                            ?>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="card h-100 border-0 bg-light">
+                                        <div class="card-body text-center">
+                                            <div class="fs-1 mb-2"><?php echo $meta['icon']; ?></div>
+                                            <div class="text-muted small mb-1"><?php echo $meta['name']; ?></div>
+                                            <div class="h4 fw-bold text-success"><?php echo fmt($value); ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
         <?php endif; ?>
 
         <?php if (empty($searchResults) && !$selectedCity && empty($error) && empty($searchQuery)): ?>
-            <div class="max-w-2xl mx-auto text-center fade-in">
-                <div class="search-card p-12">
-                    <div class="text-8xl mb-6">🌏</div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Mulai Pencarian Anda</h3>
-                    <p class="text-xl text-gray-600 mb-8">
-                        Masukkan nama kota di kolom pencarian di atas untuk melihat kualitas udara real-time
-                    </p>
-                    <div class="flex flex-wrap justify-center gap-3">
-                        <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm font-medium">Jakarta</span>
-                        <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm font-medium">Surabaya</span>
-                        <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm font-medium">Bandung</span>
-                        <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm font-medium">London</span>
-                        <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm font-medium">Tokyo</span>
-                        <span class="px-4 py-2 bg-gray-100 rounded-full text-gray-700 text-sm font-medium">New York</span>
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card p-5 text-center shadow">
+                        <div class="fs-1 mb-4">🌏</div>
+                        <h3 class="h3 fw-bold text-dark mb-3">Mulai Pencarian Anda</h3>
+                        <p class="lead text-muted mb-4">
+                            Masukkan nama kota di kolom pencarian di atas untuk melihat kualitas udara real-time
+                        </p>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <span class="badge bg-light text-dark px-3 py-2">Jakarta</span>
+                            <span class="badge bg-light text-dark px-3 py-2">Surabaya</span>
+                            <span class="badge bg-light text-dark px-3 py-2">Bandung</span>
+                            <span class="badge bg-light text-dark px-3 py-2">London</span>
+                            <span class="badge bg-light text-dark px-3 py-2">Tokyo</span>
+                            <span class="badge bg-light text-dark px-3 py-2">New York</span>
+                        </div>
                     </div>
                 </div>
             </div>
         <?php endif; ?>
 
         <?php if (empty($searchResults) && !empty($searchQuery) && !$selectedCity && !$error): ?>
-            <div class="max-w-2xl mx-auto text-center fade-in">
-                <div class="search-card p-12">
-                    <div class="text-8xl mb-6">🔍</div>
-                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Tidak Ada Hasil</h3>
-                    <p class="text-xl text-gray-600">
-                        Tidak ditemukan kota dengan nama "<strong><?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?></strong>"
-                    </p>
-                    <p class="text-gray-500 mt-4">
-                        Coba periksa ejaan atau gunakan nama kota dalam bahasa Inggris
-                    </p>
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="card p-5 text-center shadow">
+                        <div class="fs-1 mb-4">🔍</div>
+                        <h3 class="h3 fw-bold text-dark mb-3">Tidak Ada Hasil</h3>
+                        <p class="lead text-muted">
+                            Tidak ditemukan kota dengan nama "<strong><?php echo htmlspecialchars($searchQuery, ENT_QUOTES, 'UTF-8'); ?></strong>"
+                        </p>
+                        <p class="text-muted mt-3">
+                            Coba periksa ejaan atau gunakan nama kota dalam bahasa Inggris
+                        </p>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
 
     </main>
 
-    <footer class="mt-16 bg-gray-900 py-6">
-        <div class="container mx-auto px-4">
-            <p class="text-center text-gray-300">
-                © <?php echo date('Y'); ?> AirCare. Data powered by 
-                <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer" class="text-green-400 font-semibold hover:underline">
+    <footer class="site-footer mt-4">
+        <div class="container py-3">
+            <hr class="border-secondary opacity-50 mb-3">
+            <p class="mb-0 text-center small">
+                © <?php echo date('Y'); ?> AirCare. Data powered by
+                <a href="https://openweathermap.org/api" target="_blank" rel="noopener noreferrer">
                     OpenWeatherMap API
-                </a>
+                </a>.
             </p>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
